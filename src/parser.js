@@ -1,4 +1,4 @@
-const parse = xmlString => {
+const parse = (xmlString) => {
   const parser = new DOMParser()
   const xmlDoc = parser.parseFromString(xmlString, 'application/xml')
 
@@ -19,7 +19,7 @@ const parse = xmlString => {
   const title = channel.querySelector('title').textContent
   const description = channel.querySelector('description').textContent
 
-  const items = Array.from(channel.querySelectorAll('item')).map(item => {
+  const items = Array.from(channel.querySelectorAll('item')).map((item) => {
     const itemTitle = item.querySelector('title').textContent
     const itemLink = item.querySelector('link').textContent
     const itemDescription = item.querySelector('description').textContent

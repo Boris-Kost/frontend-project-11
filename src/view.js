@@ -7,7 +7,8 @@ const renderForm = (state, elements, i18n) => {
   if (loadingProcess.status === 'loading') {
     button.disabled = true
     input.readOnly = true
-  } else {
+  }
+  else {
     button.disabled = false
     input.readOnly = false
   }
@@ -49,7 +50,7 @@ const renderFeeds = (state, elements, i18n) => {
   const listGroup = document.createElement('ul')
   listGroup.className = 'list-group border-0 rounded-0'
 
-  state.feeds.forEach(feed => {
+  state.feeds.forEach((feed) => {
     const li = document.createElement('li')
     li.className = 'list-group-item border-0 border-top-0'
     const h3 = document.createElement('h3')
@@ -85,7 +86,7 @@ const renderPosts = (state, elements, i18n) => {
   const listGroup = document.createElement('ul')
   listGroup.className = 'list-group border-0 rounded-0'
 
-  state.posts.forEach(post => {
+  state.posts.forEach((post) => {
     const li = document.createElement('li')
     li.className = 'list-group-item d-flex justify-content-between align-items-start border-0 border-top-0'
 
@@ -118,7 +119,7 @@ const renderModal = (state, elements, i18n) => {
   const { selectedPostId } = state.uiState
   if (!selectedPostId) return
 
-  const post = state.posts.find(p => p.id === selectedPostId)
+  const post = state.posts.find((p) => p.id === selectedPostId)
   const {
     title, body, footerLink, closeBtn,
   } = elements.modal

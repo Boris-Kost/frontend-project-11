@@ -10,22 +10,22 @@ import parse from './parser.js'
 import './index.css'
 import 'bootstrap'
 
-const addProxy = url => {
+const addProxy = (url) => {
   const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app')
   urlWithProxy.searchParams.set('url', url)
   urlWithProxy.searchParams.set('disableCache', 'true')
   return urlWithProxy.toString()
 }
 
-const updateFeeds = state => {
-  const promises = state.feeds.map(feed => axios.get(addProxy(feed.url))
-    .then(response => {
+const updateFeeds = (state) => {
+  const promises = state.feeds.map((feed) => axios.get(addProxy(feed.url))
+    .then((response) => {
       const { items } = parse(response.data.contents)
-      const currentFeedPosts = state.posts.filter(p => p.feedId === feed.id)
+      const currentFeedPosts = state.posts.filter((p) => p.feedId === feed.id)
       const newPosts = differenceBy(items, currentFeedPosts, 'link')
 
       if (newPosts.length > 0) {
-        const postsWithId = newPosts.map(post => ({
+        const postsWithId = newPosts.map((post) => ({
           ...post,
           id: uniqueId(),
           feedId: feed.id,
@@ -33,7 +33,7 @@ const updateFeeds = state => {
         state.posts.unshift(...postsWithId)
       }
     })
-    .catch(e => {
+    .catch((e) => {
       console.error(`Update failed for ${feed.url}:`, e)
     }))
 
@@ -52,7 +52,7 @@ const handleRssData = (state, url, contents) => {
     description: data.description,
   })
 
-  const posts = data.items.map(item => ({
+  const posts = data.items.map((item) => ({
     ...item,
     id: uniqueId(),
     feedId,
@@ -113,12 +113,12 @@ const app = () => {
     initView(state, elements, i18nInstance)
 
     const validate = (url, feeds) => {
-      const feedUrls = feeds.map(f => f.url)
+      const feedUrls = feeds.map((f) => f.url)
       const schema = yup.string().url().required().notOneOf(feedUrls)
       return schema.validate(url)
     }
 
-    elements.form.addEventListener('submit', e => {
+    elements.form.addEventListener('submit', (e) => {
       e.preventDefault()
       const formData = new FormData(e.target)
       const url = formData.get('url').trim()
@@ -134,25 +134,27 @@ const app = () => {
 
           return axios.get(addProxy(url))
         })
-        .then(response => {
+        .then((response) => {
           handleRssData(state, url, response.data.contents)
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.name === 'ValidationError') {
             state.form.valid = false
             state.form.error = err.message
             state.form.status = 'failed'
-          } else if (err.isParserError) {
+          }
+          else if (err.isParserError) {
             state.loadingProcess.status = 'failed'
             state.loadingProcess.error = 'invalidRss'
-          } else {
+          }
+          else {
             state.loadingProcess.status = 'failed'
             state.loadingProcess.error = 'network'
           }
         })
     })
 
-    elements.postsContainer.addEventListener('click', e => {
+    elements.postsContainer.addEventListener('click', (e) => {
       const { id } = e.target.dataset
       if (!id) return
 
