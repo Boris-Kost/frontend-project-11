@@ -55,6 +55,10 @@ const app = () => {
     },
     feeds: [],
     posts: [],
+    uiState: {
+      selectedPostId: null,
+      readPosts: new Set(),
+    },
   });
 
   const elements = {
@@ -64,6 +68,12 @@ const app = () => {
     feedback: document.querySelector('.feedback'),
     feedsContainer: document.querySelector('.feeds'),
     postsContainer: document.querySelector('.posts'),
+    modal: {
+      title: document.querySelector('.modal-title'),
+      body: document.querySelector('.modal-body'),
+      footerLink: document.querySelector('.full-link'),
+      closeBtn: document.querySelector('.modal-footer .btn-secondary'),
+    },
   };
 
   const i18nInstance = i18next.createInstance();
@@ -138,7 +148,17 @@ const app = () => {
         });
     });
 
-    // Запускаем обновление сразу после инициализации
+    elements.postsContainer.addEventListener('click', (e) => {
+      const { id } = e.target.dataset;
+      if (!id) return;
+
+      state.uiState.readPosts.add(id);
+
+      if (e.target.tagName === 'BUTTON') {
+        state.uiState.selectedPostId = id;
+      }
+    });
+
     setTimeout(() => updateFeeds(state), 5000);
   });
 };

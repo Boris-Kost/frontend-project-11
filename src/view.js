@@ -88,9 +88,11 @@ const renderPosts = (state, elements, i18n) => {
   state.posts.forEach((post) => {
     const li = document.createElement('li');
     li.className = 'list-group-item d-flex justify-content-between align-items-start border-0 border-top-0';
+
+    const isRead = state.uiState.readPosts.has(post.id);
     const a = document.createElement('a');
     a.setAttribute('href', post.link);
-    a.className = 'fw-bold';
+    a.className = isRead ? 'fw-normal link-secondary' : 'fw-bold';
     a.setAttribute('data-id', post.id);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
@@ -112,11 +114,28 @@ const renderPosts = (state, elements, i18n) => {
   postsContainer.appendChild(card);
 };
 
+const renderModal = (state, elements, i18n) => {
+  const { selectedPostId } = state.uiState;
+  if (!selectedPostId) return;
+
+  const post = state.posts.find((p) => p.id === selectedPostId);
+  const {
+    title, body, footerLink, closeBtn,
+  } = elements.modal;
+
+  title.textContent = post.title;
+  body.textContent = post.description;
+  footerLink.setAttribute('href', post.link);
+  footerLink.textContent = i18n.t('ui.modal.readFull');
+  closeBtn.textContent = i18n.t('ui.modal.close');
+};
+
 const initView = (state, elements, i18n) => {
   subscribe(state, () => {
     renderForm(state, elements, i18n);
     renderFeeds(state, elements, i18n);
     renderPosts(state, elements, i18n);
+    renderModal(state, elements, i18n);
   });
 };
 
