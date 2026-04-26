@@ -10,7 +10,7 @@ import parse from './parser.js'
 import './index.css'
 import 'bootstrap'
 
-const addProxy = (url) => {
+const addProxy = url => {
   const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app')
   urlWithProxy.searchParams.set('url', url)
   urlWithProxy.searchParams.set('disableCache', 'true')
@@ -18,14 +18,14 @@ const addProxy = (url) => {
 }
 
 const updateFeeds = (state) => {
-  const promises = state.feeds.map((feed) => axios.get(addProxy(feed.url))
+  const promises = state.feeds.map(feed => axios.get(addProxy(feed.url))
     .then((response) => {
       const { items } = parse(response.data.contents)
-      const currentFeedPosts = state.posts.filter((p) => p.feedId === feed.id)
+      const currentFeedPosts = state.posts.filter(p => p.feedId === feed.id)
       const newPosts = differenceBy(items, currentFeedPosts, 'link')
 
       if (newPosts.length > 0) {
-        const postsWithId = newPosts.map((post) => ({
+        const postsWithId = newPosts.map(post => ({
           ...post,
           id: uniqueId(),
           feedId: feed.id,
@@ -52,7 +52,7 @@ const handleRssData = (state, url, contents) => {
     description: data.description,
   })
 
-  const posts = data.items.map((item) => ({
+  const posts = data.items.map(item => ({
     ...item,
     id: uniqueId(),
     feedId,
@@ -113,7 +113,7 @@ const app = () => {
     initView(state, elements, i18nInstance)
 
     const validate = (url, feeds) => {
-      const feedUrls = feeds.map((f) => f.url)
+      const feedUrls = feeds.map(f => f.url)
       const schema = yup.string().url().required().notOneOf(feedUrls)
       return schema.validate(url)
     }
