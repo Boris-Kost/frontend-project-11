@@ -10,7 +10,7 @@ import parse from './parser.js'
 import './index.css'
 import 'bootstrap'
 
-const addProxy = url => {
+const addProxy = (url) => {
   const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app')
   urlWithProxy.searchParams.set('url', url)
   urlWithProxy.searchParams.set('disableCache', 'true')
