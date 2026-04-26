@@ -3,6 +3,7 @@ import * as yup from 'yup';
 import i18next from 'i18next';
 import axios from 'axios';
 import uniqueId from 'lodash/uniqueId';
+import differenceBy from 'lodash/differenceBy';
 import ru from './locales/ru.js';
 import initView from './view.js';
 import parse from './parser.js';
@@ -16,6 +17,31 @@ const addProxy = (url) => {
   return urlWithProxy.toString();
 };
 
+const updateFeeds = (state) => {
+  const promises = state.feeds.map((feed) => axios.get(addProxy(feed.url))
+    .then((response) => {
+      const { items } = parse(response.data.contents);
+      const currentFeedPosts = state.posts.filter((p) => p.feedId === feed.id);
+      const newPosts = differenceBy(items, currentFeedPosts, 'link');
+
+      if (newPosts.length > 0) {
+        const postsWithId = newPosts.map((post) => ({
+          ...post,
+          id: uniqueId(),
+          feedId: feed.id,
+        }));
+        state.posts.unshift(...postsWithId);
+      }
+    })
+    .catch((e) => {
+      console.error(`Update failed for ${feed.url}:`, e);
+    }));
+
+  Promise.all(promises).finally(() => {
+    setTimeout(() => updateFeeds(state), 5000);
+  });
+};
+
 const app = () => {
   const state = proxy({
     form: {
@@ -24,7 +50,7 @@ const app = () => {
       status: 'filling',
     },
     loadingProcess: {
-      status: 'idle', // idle, loading, failed, success
+      status: 'idle',
       error: null,
     },
     feeds: [],
@@ -111,6 +137,9 @@ const app = () => {
           }
         });
     });
+
+    // Запускаем обновление сразу после инициализации
+    setTimeout(() => updateFeeds(state), 5000);
   });
 };
 
