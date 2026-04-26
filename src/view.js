@@ -8,7 +8,7 @@ const renderForm = (state, elements, i18n) => {
     input.classList.remove('is-invalid');
     feedback.classList.remove('text-danger');
     feedback.classList.add('text-success');
-    feedback.textContent = i18n.t('messages.success');
+    feedback.textContent = i18n.t('feedback.success');
     input.value = '';
     input.focus();
   }

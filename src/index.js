@@ -31,6 +31,16 @@ const app = () => {
       ru,
     },
   }).then(() => {
+    yup.setLocale({
+      string: {
+        url: 'invalidUrl',
+      },
+      mixed: {
+        required: 'required',
+        notOneOf: 'duplicate',
+      },
+    });
+
     initView(state, elements, i18nInstance);
 
     const validate = (url, feeds) => {
@@ -52,7 +62,7 @@ const app = () => {
         })
         .catch((err) => {
           state.form.valid = false;
-          state.form.error = err.type === 'notOneOf' ? 'duplicate' : (err.type === 'url' ? 'invalidUrl' : 'required');
+          state.form.error = err.message;
           state.form.status = 'failed';
         });
     });
