@@ -17,6 +17,9 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.8"
+    "bootstrap": "^5.3.8",
+    "i18next": "^26.0.8",
+    "valtio": "^2.3.1",
+    "yup": "^1.7.1"
   }
 }
