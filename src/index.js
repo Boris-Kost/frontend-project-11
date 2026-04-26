@@ -42,6 +42,27 @@ const updateFeeds = (state) => {
   });
 };
 
+const handleRssData = (state, url, contents) => {
+  const data = parse(contents);
+  const feedId = uniqueId();
+  state.feeds.push({
+    id: feedId,
+    url,
+    title: data.title,
+    description: data.description,
+  });
+
+  const posts = data.items.map((item) => ({
+    ...item,
+    id: uniqueId(),
+    feedId,
+  }));
+  state.posts.push(...posts);
+
+  state.loadingProcess.status = 'success';
+  state.form.status = 'finished';
+};
+
 const app = () => {
   const state = proxy({
     form: {
@@ -114,24 +135,7 @@ const app = () => {
           return axios.get(addProxy(url));
         })
         .then((response) => {
-          const data = parse(response.data.contents);
-          const feedId = uniqueId();
-          state.feeds.push({
-            id: feedId,
-            url,
-            title: data.title,
-            description: data.description,
-          });
-
-          const posts = data.items.map((item) => ({
-            ...item,
-            id: uniqueId(),
-            feedId,
-          }));
-          state.posts.push(...posts);
-
-          state.loadingProcess.status = 'success';
-          state.form.status = 'finished';
+          handleRssData(state, url, response.data.contents);
         })
         .catch((err) => {
           if (err.name === 'ValidationError') {

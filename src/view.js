@@ -93,7 +93,7 @@ const renderPosts = (state, elements, i18n) => {
     const a = document.createElement('a');
     a.setAttribute('href', post.link);
     a.className = isRead ? 'fw-normal link-secondary' : 'fw-bold';
-    a.setAttribute('data-id', post.id);
+    a.dataset.id = post.id;
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
     a.textContent = post.title;
@@ -101,9 +101,9 @@ const renderPosts = (state, elements, i18n) => {
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
     button.className = 'btn btn-outline-primary btn-sm';
-    button.setAttribute('data-id', post.id);
-    button.setAttribute('data-bs-toggle', 'modal');
-    button.setAttribute('data-bs-target', '#modal');
+    button.dataset.id = post.id;
+    button.dataset.bsToggle = 'modal';
+    button.dataset.bsTarget = '#modal';
     button.textContent = i18n.t('ui.view');
 
     li.append(a, button);
